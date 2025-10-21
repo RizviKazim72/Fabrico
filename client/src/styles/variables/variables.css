@@ -1,0 +1,54 @@
+/* stylelint-disable at-rule-no-unknown */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap");
+
+@theme {
+
+		/* Typography */
+		--font-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+		--font-display: "Roboto", "Inter", "Helvetica Neue", Arial, sans-serif;
+		--font-mono: "Roboto Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+		/* Brand palette */
+		--color-brand-50: #e9f2ff;
+		--color-brand-100: #d4e4ff;
+		--color-brand-200: #a6c8ff;
+		--color-brand-300: #7baaf7;
+		--color-brand-400: #4f8df0;
+		--color-brand-500: #1a73e8;
+		--color-brand-600: #155ccc;
+		--color-brand-700: #0e47a1;
+		--color-brand-800: #0a3472;
+		--color-brand-900: #072249;
+
+		/* Neutral surfaces for airy e-commerce layouts */
+		--color-neutral-50: #f8fafc;
+		--color-neutral-100: #f1f5f9;
+		--color-neutral-200: #e2e8f0;
+		--color-neutral-300: #cbd5f5;
+		--color-neutral-400: #94a3b8;
+		--color-neutral-500: #64748b;
+		--color-neutral-600: #475569;
+		--color-neutral-700: #334155;
+		--color-neutral-800: #1e293b;
+		--color-neutral-900: #0f172a;
+
+		/* Supportive accents for products */
+		--color-accent-500: #fbbc04;
+		--color-accent-600: #c88c02;
+		--color-positive-500: #0f9d58;
+		--color-positive-600: #0b7842;
+		--color-negative-500: #ea4335;
+		--color-negative-600: #c13524;
+		--color-info-500: #4285f4;
+		--color-info-600: #3367d6;
+
+		/* quick theming hooks */
+		--color-background: var(--color-neutral-50);
+		--color-surface: #ffffff;
+		--color-surface-elevated: #f9fbff;
+		--color-border: #dfe3eb;
+		--color-text-primary: #1f2937;
+		--color-text-secondary: #4b5563;
+		--color-text-muted: #6b7280;
+		--color-text-inverse: #ffffff;
+	}
