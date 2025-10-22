@@ -2,7 +2,7 @@
 
 A modern, full-stack e-commerce application built with React, Spring Boot, and PostgreSQL.
 
-![Fabrico Banner](![alt text](image.png))
+(![alt text](image.png))
 
 ## 📋 Table of Contents
 
@@ -250,16 +250,16 @@ Authorization: Bearer <your-jwt-token>
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage](![alt text](image-1.png))
+(![alt text](image-1.png))
 
 ### Products Page
-![Products](![alt text](image-2.png))
+(![alt text](image-2.png))
 
 ### Shopping Cart
-![Cart](![alt text](image-3.png))
+(![alt text](image-3.png))
 
 ### User Profile
-![Profile](![alt text](image-4.png))
+(![alt text](image-4.png))
 
 ## 🎨 Design Features
 
