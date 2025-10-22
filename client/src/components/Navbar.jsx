@@ -18,9 +18,25 @@ import Logo from './Logo';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+
+  // Load cart count from localStorage
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalItems);
+    };
+
+    updateCartCount();
+    
+    // Listen for cart updates
+    window.addEventListener('cartUpdated', updateCartCount);
+    return () => window.removeEventListener('cartUpdated', updateCartCount);
+  }, []);
 
   // Track scroll position for sticky navbar styling
   useEffect(() => {
@@ -44,7 +60,7 @@ const Navbar = () => {
     { 
       path: '/cart', 
       label: 'Cart', 
-      badge: 0, // TODO: Connect to cart state
+      badge: cartCount,
       icon: ShoppingCart 
     },
   ];
@@ -124,32 +140,53 @@ const Navbar = () => {
 
             {/* Auth Buttons */}
             <div className="flex items-center gap-3 ml-4">
-              <Link
-                to="/login"
-                className="
-                  px-4 py-2
-                  text-sm font-medium
-                  text-brand-600
-                  hover:text-brand-700
-                  transition-colors
-                "
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="
-                  px-5 py-2
-                  text-sm font-medium
-                  bg-brand-500 text-text-inverse
-                  rounded-lg
-                  hover:bg-brand-600
-                  transition-all duration-200
-                  shadow-sm hover:shadow-md
-                "
-              >
-                Sign Up
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/profile"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-brand-600 transition-colors"
+                  >
+                    <UserIcon className="w-4 h-4" />
+                    <span className="hidden lg:inline">{user.name}</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden lg:inline">Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="
+                      px-4 py-2
+                      text-sm font-medium
+                      text-brand-600
+                      hover:text-brand-700
+                      transition-colors
+                    "
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="
+                      px-5 py-2
+                      text-sm font-medium
+                      bg-brand-500 text-text-inverse
+                      rounded-lg
+                      hover:bg-brand-600
+                      transition-all duration-200
+                      shadow-sm hover:shadow-md
+                    "
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
