@@ -7,14 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Register Request DTO
- * 
- * Data Transfer Object for user registration
- * Contains validation rules for registration fields
- * 
- * Flow: Frontend → Controller → Service → Database
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

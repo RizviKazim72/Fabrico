@@ -6,14 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Login Request DTO
- * 
- * Data Transfer Object for user login
- * Simple email + password authentication
- * 
- * Flow: Frontend → Controller → Service → JWT Generation
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

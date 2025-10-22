@@ -1,25 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-/**
- * Brand Logo Component
- * 
- * Reusable logo component for Fabrico brand
- * Can be used in Navbar, Footer, or anywhere branding is needed
- * 
- * @param {string} size - Size variant: 'sm', 'md', 'lg', 'xl'
- * @param {string} className - Additional Tailwind classes for customization
- * @param {boolean} showTagline - Whether to show brand tagline
- * @param {boolean} clickable - Whether logo is clickable (links to home)
- */
+// Brand logo component - supports dark and light themes
 const Logo = ({ 
-  size = 'md', 
+  size = 'md',
+  variant = 'default',
   className = '', 
   showTagline = false,
   clickable = true 
 }) => {
   
-  // Size configurations for responsive logo
+  // Different sizes available
   const sizeClasses = {
     sm: 'text-xl',
     md: 'text-2xl',
@@ -27,9 +18,12 @@ const Logo = ({
     xl: 'text-4xl'
   };
 
+  // Footer ya dark background ke liye light variant 
+  const textColor = variant === 'light' ? 'text-white' : 'text-text-primary';
+  const taglineColor = variant === 'light' ? 'text-gray-300' : 'text-text-muted';
+
   const LogoContent = () => (
     <div className={`flex items-center gap-2 ${className}`}>
-      {/* Logo Icon - Minimalist F design */}
       <div className={`
         ${sizeClasses[size]} 
         font-bold 
@@ -44,21 +38,19 @@ const Logo = ({
         F
       </div>
 
-      {/* Brand Name */}
       <div className="flex flex-col">
         <span className={`
           ${sizeClasses[size]} 
           font-display 
           font-bold 
-          text-text-primary 
+          ${textColor}
           tracking-tight
         `}>
           Fabrico
         </span>
         
-        {/* Optional Tagline */}
         {showTagline && (
-          <span className="text-xs text-text-muted font-medium tracking-wide">
+          <span className={`text-xs ${taglineColor} font-medium tracking-wide`}>
             Style Your Story
           </span>
         )}
@@ -66,7 +58,7 @@ const Logo = ({
     </div>
   );
 
-  // Return clickable logo with Link wrapper or static logo
+  // Clickable ya simple logo return 
   return clickable ? (
     <Link 
       to="/" 

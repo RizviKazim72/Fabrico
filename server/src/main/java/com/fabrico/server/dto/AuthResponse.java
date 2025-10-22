@@ -5,15 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Authentication Response DTO
- * 
- * Response sent to frontend after successful login/registration
- * Contains JWT token and user information
- * 
- * Frontend stores this token in localStorage
- * Token is sent in Authorization header for protected API calls
- */
 @Data
 @Builder
 @NoArgsConstructor

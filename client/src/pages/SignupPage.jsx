@@ -1,114 +1,80 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User, Phone, UserPlus } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { useAuth } from '../context/AuthContext';
-import Logo from '../components/Logo';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff, User, Phone, UserPlus } from "lucide-react";
+import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
+import Logo from "../components/Logo";
 
-/**
- * Signup/Register Page Component
- * 
- * Features:
- * - Complete registration form
- * - Client-side validation
- * - Password visibility toggle
- * - Real-time error feedback
- * - Success/error toast notifications
- * 
- * Flow:
- * 1. User fills registration form
- * 2. Client validates all fields
- * 3. Calls auth context register()
- * 4. Shows success toast
- * 5. Redirects to home page
- */
 const SignupPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
-  
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    phoneNumber: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
   });
-  
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    // Clear error for this field
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  // Validate form
   const validate = () => {
     const newErrors = {};
-
-    // Name validation
     if (!formData.name) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
-
-    // Email validation
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
-
-    // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
-
-    // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) {
-      toast.error('Please fix the errors in the form');
+      toast.error("Please fix the errors in the form");
       return;
     }
-
     setLoading(true);
-
     try {
-      // Remove confirmPassword before sending to backend
       const { confirmPassword, ...userData } = formData;
       const response = await register(userData);
-      toast.success(response.message || 'Registration successful!');
-      navigate('/');
+      toast.success(response.message || "Registration successful!");
+      navigate("/");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+      const errorMessage =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
       toast.error(errorMessage);
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
     } finally {
       setLoading(false);
     }
@@ -116,10 +82,7 @@ const SignupPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 via-surface to-neutral-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Signup Card */}
       <div className="max-w-md w-full space-y-8 bg-surface p-8 rounded-2xl shadow-2xl border border-border">
-        
-        {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-6">
             <Logo size="lg" clickable={false} showTagline />
@@ -131,13 +94,12 @@ const SignupPage = () => {
             Join Fabrico and start shopping
           </p>
         </div>
-
-        {/* Signup Form */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          
-          {/* Name Field */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-text-secondary mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-text-secondary mb-2"
+            >
               Full Name
             </label>
             <div className="relative">
@@ -152,7 +114,7 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className={`
                   block w-full pl-10 pr-3 py-3
-                  border ${errors.name ? 'border-negative-500' : 'border-border'}
+                  border ${errors.name ? "border-negative-500" : "border-border"}
                   rounded-lg
                   text-text-primary placeholder-text-muted
                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
@@ -165,10 +127,11 @@ const SignupPage = () => {
               <p className="mt-1 text-sm text-negative-500">{errors.name}</p>
             )}
           </div>
-
-          {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-text-secondary mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-text-secondary mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -184,7 +147,7 @@ const SignupPage = () => {
                 onChange={handleChange}
                 className={`
                   block w-full pl-10 pr-3 py-3
-                  border ${errors.email ? 'border-negative-500' : 'border-border'}
+                  border ${errors.email ? "border-negative-500" : "border-border"}
                   rounded-lg
                   text-text-primary placeholder-text-muted
                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
@@ -197,10 +160,11 @@ const SignupPage = () => {
               <p className="mt-1 text-sm text-negative-500">{errors.email}</p>
             )}
           </div>
-
-          {/* Phone Number Field (Optional) */}
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-text-secondary mb-2">
+            <label
+              htmlFor="phoneNumber"
+              className="block text-sm font-medium text-text-secondary mb-2"
+            >
               Phone Number <span className="text-text-muted">(Optional)</span>
             </label>
             <div className="relative">
@@ -225,10 +189,11 @@ const SignupPage = () => {
               />
             </div>
           </div>
-
-          {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-text-secondary mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-text-secondary mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -238,13 +203,13 @@ const SignupPage = () => {
               <input
                 id="password"
                 name="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 value={formData.password}
                 onChange={handleChange}
                 className={`
                   block w-full pl-10 pr-10 py-3
-                  border ${errors.password ? 'border-negative-500' : 'border-border'}
+                  border ${errors.password ? "border-negative-500" : "border-border"}
                   rounded-lg
                   text-text-primary placeholder-text-muted
                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
@@ -265,13 +230,16 @@ const SignupPage = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="mt-1 text-sm text-negative-500">{errors.password}</p>
+              <p className="mt-1 text-sm text-negative-500">
+                {errors.password}
+              </p>
             )}
           </div>
-
-          {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-secondary mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-text-secondary mb-2"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -281,13 +249,13 @@ const SignupPage = () => {
               <input
                 id="confirmPassword"
                 name="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? "text" : "password"}
                 autoComplete="new-password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 className={`
                   block w-full pl-10 pr-10 py-3
-                  border ${errors.confirmPassword ? 'border-negative-500' : 'border-border'}
+                  border ${errors.confirmPassword ? "border-negative-500" : "border-border"}
                   rounded-lg
                   text-text-primary placeholder-text-muted
                   focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
@@ -308,11 +276,11 @@ const SignupPage = () => {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-negative-500">{errors.confirmPassword}</p>
+              <p className="mt-1 text-sm text-negative-500">
+                {errors.confirmPassword}
+              </p>
             )}
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -338,11 +306,9 @@ const SignupPage = () => {
               </>
             )}
           </button>
-
-          {/* Login Link */}
           <div className="text-center">
             <p className="text-sm text-text-muted">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <Link
                 to="/login"
                 className="font-semibold text-brand-600 hover:text-brand-700 transition-colors"

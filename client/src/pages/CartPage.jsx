@@ -1,96 +1,85 @@
-import { useState, useEffect } from 'react';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, Package } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/AuthContext';
+import { useState, useEffect } from "react";
+import {
+  ShoppingCart,
+  Plus,
+  Minus,
+  Trash2,
+  ArrowRight,
+  Package,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import { useAuth } from "../context/AuthContext";
 
-/**
- * Cart Page Component
- * 
- * Features:
- * - Display cart items
- * - Update quantity (+/-)
- * - Remove items
- * - Calculate total
- * - Checkout button
- */
-function CartPage() {
+const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // Load cart from localStorage
   useEffect(() => {
     loadCart();
-    
-    // Listen for cart updates
     const handleCartUpdate = () => loadCart();
-    window.addEventListener('cartUpdated', handleCartUpdate);
-    
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener("cartUpdated", handleCartUpdate);
+    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, []);
 
   const loadCart = () => {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCartItems(cart);
   };
 
-  // Update quantity
   const updateQuantity = (productId, newQuantity) => {
     if (newQuantity < 1) return;
-    
-    const updatedCart = cartItems.map(item =>
+    const updatedCart = cartItems.map((item) =>
       item.id === productId ? { ...item, quantity: newQuantity } : item
     );
-    
     setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    window.dispatchEvent(new Event('cartUpdated'));
-    toast.success('Cart updated!');
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event("cartUpdated"));
+    toast.success("Cart updated!");
   };
 
-  // Remove item
   const removeItem = (productId, productName) => {
-    const updatedCart = cartItems.filter(item => item.id !== productId);
+    const updatedCart = cartItems.filter((item) => item.id !== productId);
     setCartItems(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    window.dispatchEvent(new Event('cartUpdated'));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.dispatchEvent(new Event("cartUpdated"));
     toast.success(`${productName} removed from cart!`);
   };
 
-  // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const shipping = subtotal > 0 ? (subtotal > 1000 ? 0 : 50) : 0;
-  const tax = subtotal * 0.18; // 18% GST
+  const tax = subtotal * 0.18;
   const total = subtotal + shipping + tax;
 
-  // Checkout handler
   const handleCheckout = () => {
     if (!isAuthenticated) {
-      toast.error('Please login to checkout');
-      navigate('/login');
+      toast.error("Please login to checkout");
+      navigate("/login");
       return;
     }
-    
     if (cartItems.length === 0) {
-      toast.error('Your cart is empty!');
+      toast.error("Your cart is empty!");
       return;
     }
-    
-    // For now, just show success message
-    toast.success('Order placed successfully! 🎉');
-    localStorage.setItem('cart', JSON.stringify([]));
+
+    toast.success("Order placed successfully! 🎉");
+    localStorage.setItem("cart", "[]");
     setCartItems([]);
-    window.dispatchEvent(new Event('cartUpdated'));
-    navigate('/');
+    window.dispatchEvent(new Event("cartUpdated"));
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
-      {/* Page Header */}
+
+      {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-3">
@@ -98,50 +87,54 @@ function CartPage() {
             <h1 className="text-4xl font-bold text-gray-800">Shopping Cart</h1>
           </div>
           <p className="text-gray-600 mt-2">
-            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
+            {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in
+            your cart
           </p>
         </div>
       </div>
 
+      {/* Main Section */}
       <div className="container mx-auto px-4 py-8">
         {cartItems.length === 0 ? (
-          /* Empty Cart */
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <Package className="w-24 h-24 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Your cart is empty</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              Your cart is empty
+            </h2>
             <p className="text-gray-600 mb-6">
-              Looks like you haven't added anything to your cart yet
+              Looks like you haven't added anything yet
             </p>
             <Link
               to="/products"
               className="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-medium px-6 py-3 rounded-lg transition-colors"
             >
-              <ShoppingCart className="w-5 h-5" />
-              Continue Shopping
+              <ShoppingCart className="w-5 h-5" /> Continue Shopping
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm">
                 <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-800">Cart Items</h2>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Cart Items
+                  </h2>
                 </div>
-                
+
                 <div className="divide-y divide-gray-200">
-                  {cartItems.map(item => (
-                    <div key={item.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  {cartItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-6 hover:bg-gray-50 transition-colors"
+                    >
                       <div className="flex gap-4">
-                        {/* Product Image */}
                         <img
                           src={item.image}
                           alt={item.name}
                           className="w-24 h-24 object-cover rounded-lg bg-gray-100"
                         />
-                        
-                        {/* Product Info */}
+
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-800 mb-1">
                             {item.name}
@@ -154,7 +147,6 @@ function CartPage() {
                           </p>
                         </div>
 
-                        {/* Quantity Controls */}
                         <div className="flex flex-col items-end gap-3">
                           <button
                             onClick={() => removeItem(item.id, item.name)}
@@ -163,29 +155,31 @@ function CartPage() {
                           >
                             <Trash2 className="w-5 h-5" />
                           </button>
-                          
+
                           <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
                               disabled={item.quantity === 1}
-                              className="p-1 hover:bg-white rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              className="p-1 hover:bg-white rounded disabled:opacity-50 transition-colors"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
-                            
                             <span className="w-12 text-center font-semibold">
                               {item.quantity}
                             </span>
-                            
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
                               disabled={item.quantity >= item.stock}
-                              className="p-1 hover:bg-white rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              className="p-1 hover:bg-white rounded disabled:opacity-50 transition-colors"
                             >
                               <Plus className="w-4 h-4" />
                             </button>
                           </div>
-                          
+
                           <p className="text-sm font-semibold text-gray-700">
                             ₹{(item.price * item.quantity).toLocaleString()}
                           </p>
@@ -196,7 +190,6 @@ function CartPage() {
                 </div>
               </div>
 
-              {/* Continue Shopping Button */}
               <Link
                 to="/products"
                 className="mt-4 inline-flex items-center gap-2 text-brand-600 hover:text-brand-700 font-medium"
@@ -209,17 +202,19 @@ function CartPage() {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm sticky top-4">
                 <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-xl font-semibold text-gray-800">Order Summary</h2>
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Order Summary
+                  </h2>
                 </div>
-                
+
                 <div className="p-6 space-y-4">
-                  {/* Subtotal */}
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal ({cartItems.length} items)</span>
-                    <span className="font-semibold">₹{subtotal.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ₹{subtotal.toLocaleString()}
+                    </span>
                   </div>
-                  
-                  {/* Shipping */}
+
                   <div className="flex justify-between text-gray-700">
                     <span>Shipping</span>
                     <span className="font-semibold">
@@ -230,28 +225,29 @@ function CartPage() {
                       )}
                     </span>
                   </div>
-                  
+
                   {subtotal > 0 && subtotal < 1000 && (
                     <p className="text-xs text-gray-500">
-                      Add ₹{(1000 - subtotal).toLocaleString()} more for FREE shipping
+                      Add ₹{(1000 - subtotal).toLocaleString()} more for FREE
+                      shipping
                     </p>
                   )}
-                  
-                  {/* Tax */}
+
                   <div className="flex justify-between text-gray-700">
                     <span>Tax (GST 18%)</span>
                     <span className="font-semibold">₹{tax.toFixed(2)}</span>
                   </div>
-                  
+
                   <div className="border-t border-gray-200 pt-4">
                     <div className="flex justify-between text-lg font-bold text-gray-900">
                       <span>Total</span>
-                      <span className="text-brand-600">₹{total.toLocaleString()}</span>
+                      <span className="text-brand-600">
+                        ₹{total.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Checkout Button */}
                 <div className="p-6 pt-0">
                   <button
                     onClick={handleCheckout}
@@ -260,7 +256,6 @@ function CartPage() {
                     Proceed to Checkout
                     <ArrowRight className="w-5 h-5" />
                   </button>
-                  
                   {!isAuthenticated && (
                     <p className="text-xs text-center text-gray-500 mt-3">
                       You need to login to checkout
@@ -268,21 +263,16 @@ function CartPage() {
                   )}
                 </div>
 
-                {/* Trust Badges */}
                 <div className="p-6 bg-gray-50 rounded-b-lg">
                   <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <span className="text-green-600">✓</span>
-                      <span>Secure Payment</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-green-600">✓</span>
-                      <span>Easy Returns</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-green-600">✓</span>
-                      <span>Fast Delivery</span>
-                    </div>
+                    {["Secure Payment", "Easy Returns", "Fast Delivery"].map(
+                      (item) => (
+                        <div key={item} className="flex items-center gap-2">
+                          <span className="text-green-600">✓</span>
+                          <span>{item}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -290,8 +280,10 @@ function CartPage() {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
-}
+};
 
 export default CartPage;

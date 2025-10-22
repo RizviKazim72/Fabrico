@@ -3,16 +3,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, CheckCircle2, Truck, RotateCcw, Shield } from 'lucide-react';
 import BannerImage from '../assets/FashionBanner.webp';
 
-/**
- * Hero/Banner Section Component
- * 
- * Eye-catching landing section inspired by Flipkart/Amazon
- * Features:
- * - Full-width responsive banner
- * - Compelling headline and CTA
- * - Clean gradient background
- * - Professional imagery with overlay effects
- */
 const HeroSection = () => {
   return (
     <section className="
@@ -225,21 +215,6 @@ const HeroSection = () => {
             ">
               <p className="text-2xl font-bold text-brand-600">1000+</p>
               <p className="text-sm text-text-muted font-medium">Products</p>
-            </div>
-
-            {/* Floating Badge - Customer Satisfaction */}
-            <div className="
-              absolute -top-4 -right-4
-              bg-positive-500 
-              px-5 py-3 
-              rounded-full 
-              shadow-lg
-              transform hover:scale-110 transition-transform
-            ">
-              <div className="flex items-center gap-1">
-                <span className="text-xl font-bold text-text-inverse">4.8</span>
-                <span className="text-text-inverse text-sm">⭐</span>
-              </div>
             </div>
           </div>
         </div>

@@ -1,27 +1,26 @@
-import { useState } from 'react';
-import { User, Mail, Phone, Calendar, Shield, Edit2, Save, X } from 'lucide-react';
-import { toast } from 'react-toastify';
-import Navbar from '../components/Navbar';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import {
+  User,
+  Mail,
+  Phone,
+  Calendar,
+  Shield,
+  Edit2,
+  Save,
+  X,
+} from "lucide-react";
+import { toast } from "react-toastify";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
-/**
- * Profile Page Component
- * 
- * Features:
- * - Display user information
- * - Edit profile (name, phone)
- * - Show account creation date
- * - Display user role
- */
 function ProfilePage() {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    phoneNumber: user?.phoneNumber || '',
+    name: user?.name || "",
+    phoneNumber: user?.phoneNumber || "",
   });
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -29,63 +28,47 @@ function ProfilePage() {
     });
   };
 
-  // Save profile changes
   const handleSave = () => {
-    // Validation
     if (formData.name.length < 2) {
-      toast.error('Name must be at least 2 characters');
+      toast.error("Name must be at least 2 characters");
       return;
     }
-
-    // Update user in localStorage
     const updatedUser = {
       ...user,
       name: formData.name,
       phoneNumber: formData.phoneNumber,
     };
-    
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    
-    // In real app, would call API to update backend
-    // await api.put('/user/profile', formData);
-    
+    localStorage.setItem("user", JSON.stringify(updatedUser));
     setIsEditing(false);
-    toast.success('Profile updated successfully!');
-    
-    // Reload page to reflect changes
+    toast.success("Profile updated successfully!");
     window.location.reload();
   };
 
-  // Cancel editing
   const handleCancel = () => {
     setFormData({
-      name: user?.name || '',
-      phoneNumber: user?.phoneNumber || '',
+      name: user?.name || "",
+      phoneNumber: user?.phoneNumber || "",
     });
     setIsEditing(false);
   };
 
-  // Format date
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+    return date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
   };
 
-  // Get account age
   const getAccountAge = () => {
-    if (!user?.createdAt) return 'Recently joined';
-    
+    if (!user?.createdAt) return "Recently joined";
     const created = new Date(user.createdAt);
     const now = new Date();
     const diffDays = Math.floor((now - created) / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Joined today';
-    if (diffDays === 1) return 'Joined yesterday';
+    if (diffDays === 0) return "Joined today";
+    if (diffDays === 1) return "Joined yesterday";
     if (diffDays < 7) return `${diffDays} days ago`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
     if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
@@ -95,8 +78,6 @@ function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
-      {/* Page Header */}
       <div className="bg-gradient-to-r from-brand-500 to-brand-600 text-white pt-20">
         <div className="container mx-auto px-4 py-16">
           <div className="flex items-center gap-4">
@@ -111,26 +92,23 @@ function ProfilePage() {
           </div>
         </div>
       </div>
-
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Account Overview */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Account Overview</h2>
-              
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Account Overview
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <Shield className="w-5 h-5 text-brand-600" />
                   <div>
                     <p className="text-xs text-gray-500">Role</p>
                     <p className="font-semibold text-gray-800 capitalize">
-                      {user?.role || 'User'}
+                      {user?.role || "User"}
                     </p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <Calendar className="w-5 h-5 text-brand-600" />
                   <div>
@@ -140,7 +118,6 @@ function ProfilePage() {
                     </p>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <Mail className="w-5 h-5 text-brand-600" />
                   <div>
@@ -149,10 +126,10 @@ function ProfilePage() {
                   </div>
                 </div>
               </div>
-
-              {/* Stats */}
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Quick Stats</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">
+                  Quick Stats
+                </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-3 bg-brand-50 rounded-lg">
                     <p className="text-2xl font-bold text-brand-600">0</p>
@@ -166,13 +143,12 @@ function ProfilePage() {
               </div>
             </div>
           </div>
-
-          {/* Profile Information */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-gray-800">Profile Information</h2>
-                
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Profile Information
+                </h2>
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
@@ -200,10 +176,8 @@ function ProfilePage() {
                   </div>
                 )}
               </div>
-
               <div className="p-6">
                 <div className="space-y-6">
-                  {/* Name */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <User className="w-4 h-4" />
@@ -222,8 +196,6 @@ function ProfilePage() {
                       <p className="text-lg text-gray-800">{user?.name}</p>
                     )}
                   </div>
-
-                  {/* Email (not editable) */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <Mail className="w-4 h-4" />
@@ -239,8 +211,6 @@ function ProfilePage() {
                       Email cannot be changed
                     </p>
                   </div>
-
-                  {/* Phone */}
                   <div>
                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                       <Phone className="w-4 h-4" />
@@ -257,42 +227,45 @@ function ProfilePage() {
                       />
                     ) : (
                       <p className="text-lg text-gray-800">
-                        {user?.phoneNumber || 'Not provided'}
+                        {user?.phoneNumber || "Not provided"}
                       </p>
                     )}
                   </div>
-
-                  {/* User ID */}
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-2 block">
                       User ID
                     </label>
                     <p className="text-sm text-gray-600 font-mono bg-gray-50 px-3 py-2 rounded">
-                      #{user?.id || '00000'}
+                      #{user?.id || "00000"}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Additional Info Section */}
             <div className="mt-6 bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Account Security</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Account Security
+              </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">Password</p>
-                    <p className="text-sm text-gray-500">Last changed recently</p>
+                    <p className="text-sm text-gray-500">
+                      Last changed recently
+                    </p>
                   </div>
                   <button className="text-brand-600 hover:text-brand-700 font-medium text-sm">
                     Change Password
                   </button>
                 </div>
-
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium text-gray-800">Two-Factor Authentication</p>
-                    <p className="text-sm text-gray-500">Add extra security to your account</p>
+                    <p className="font-medium text-gray-800">
+                      Two-Factor Authentication
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Add extra security to your account
+                    </p>
                   </div>
                   <button className="text-brand-600 hover:text-brand-700 font-medium text-sm">
                     Enable

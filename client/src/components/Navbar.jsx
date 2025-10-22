@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, LogOut, User as UserIcon } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { useAuth } from '../context/AuthContext';
-import Logo from './Logo';
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, ShoppingCart, LogOut, User as UserIcon } from "lucide-react";
+import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
+import { NAV_LINKS } from "../constants/navigation";
+import Logo from "./Logo";
 
-/**
- * Main Navigation Bar Component
- * 
- * Features:
- * - Responsive design with mobile hamburger menu
- * - Sticky header on scroll
- * - Active link highlighting
- * - Cart badge for item count
- * - Clean Google Material Design inspired UI
- */
+// Main navigation bar - sticky header with cart badge
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,73 +15,56 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
 
-  // Load cart count from localStorage
+  // Cart items count ko load karo localStorage se
   useEffect(() => {
     const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
       const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
       setCartCount(totalItems);
     };
 
     updateCartCount();
-    
-    // Listen for cart updates
-    window.addEventListener('cartUpdated', updateCartCount);
-    return () => window.removeEventListener('cartUpdated', updateCartCount);
+
+    window.addEventListener("cartUpdated", updateCartCount);
+    return () => window.removeEventListener("cartUpdated", updateCartCount);
   }, []);
 
-  // Track scroll position for sticky navbar styling
+  // Scroll pe navbar ka background change hota hai
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Route change hone pe mobile menu close ho jata hai
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Navigation links configuration
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/products', label: 'Products' },
-    { 
-      path: '/cart', 
-      label: 'Cart', 
-      badge: cartCount,
-      icon: ShoppingCart 
-    },
-  ];
-
-  // Check if current route is active
   const isActiveLink = (path) => location.pathname === path;
 
-  // Handle logout
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
-    navigate('/');
+    toast.success("Logged out successfully");
+    navigate("/");
     setIsMenuOpen(false);
   };
 
   return (
-    <header 
+    <header
       className={`
         fixed top-0 left-0 right-0 z-50 
         transition-all duration-300
-        ${isScrolled 
-          ? 'bg-surface/95 backdrop-blur-md shadow-md' 
-          : 'bg-surface'
+        ${
+          isScrolled ? "bg-surface/95 backdrop-blur-md shadow-md" : "bg-surface"
         }
       `}
     >
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          
           {/* Logo Section */}
           <div className="flex-shrink-0">
             <Logo size="md" showTagline={false} />
@@ -97,7 +72,7 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map(({ path, label, badge, icon: Icon }) => (
+            {NAV_LINKS.map(({ path, label, showBadge, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
@@ -106,34 +81,39 @@ const Navbar = () => {
                   flex items-center gap-2
                   text-sm font-medium
                   transition-colors duration-200
-                  ${isActiveLink(path)
-                    ? 'text-brand-600'
-                    : 'text-text-secondary hover:text-brand-500'
+                  ${
+                    isActiveLink(path)
+                      ? "text-brand-600"
+                      : "text-text-secondary hover:text-brand-500"
                   }
                 `}
               >
                 {Icon && <Icon className="w-4 h-4" />}
                 {label}
-                
+
                 {/* Cart badge */}
-                {badge !== undefined && badge > 0 && (
-                  <span className="
+                {showBadge && cartCount > 0 && (
+                  <span
+                    className="
                     absolute -top-2 -right-3
                     bg-negative-500 text-text-inverse
                     text-xs font-bold
                     w-5 h-5 rounded-full
                     flex items-center justify-center
-                  ">
-                    {badge}
+                  "
+                  >
+                    {cartCount}
                   </span>
                 )}
 
                 {/* Active link indicator */}
                 {isActiveLink(path) && (
-                  <span className="
+                  <span
+                    className="
                     absolute -bottom-1 left-0 right-0
                     h-0.5 bg-brand-600 rounded-full
-                  " />
+                  "
+                  />
                 )}
               </Link>
             ))}
@@ -211,17 +191,17 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Dropdown */}
-        <div 
+        <div
           className={`
             md:hidden
             overflow-hidden
             transition-all duration-300 ease-in-out
-            ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+            ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
           `}
         >
           <div className="py-4 space-y-2 border-t border-border">
             {/* Mobile Nav Links */}
-            {navLinks.map(({ path, label, badge, icon: Icon }) => (
+            {NAV_LINKS.map(({ path, label, showBadge, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
@@ -229,9 +209,10 @@ const Navbar = () => {
                   block px-4 py-3 rounded-lg
                   text-sm font-medium
                   transition-colors
-                  ${isActiveLink(path)
-                    ? 'bg-brand-50 text-brand-600'
-                    : 'text-text-secondary hover:bg-neutral-100'
+                  ${
+                    isActiveLink(path)
+                      ? "bg-brand-50 text-brand-600"
+                      : "text-text-secondary hover:bg-neutral-100"
                   }
                 `}
               >
@@ -240,13 +221,15 @@ const Navbar = () => {
                     {Icon && <Icon className="w-4 h-4" />}
                     {label}
                   </div>
-                  {badge !== undefined && badge > 0 && (
-                    <span className="
+                  {showBadge && cartCount > 0 && (
+                    <span
+                      className="
                       bg-negative-500 text-text-inverse
                       text-xs font-bold
                       px-2 py-1 rounded-full
-                    ">
-                      {badge}
+                    "
+                    >
+                      {cartCount}
                     </span>
                   )}
                 </div>
